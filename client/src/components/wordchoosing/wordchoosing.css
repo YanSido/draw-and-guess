@@ -1,0 +1,41 @@
+#wordchoosing {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  gap: 50px 50px;
+}
+
+.grid-item {
+  background-color: #fa6400;
+  font-family: system-ui, -apple-system, system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  font-size: 30px;
+  text-align: center;
+}
+
+#choose-title {
+  font-family: system-ui, -apple-system, system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin-bottom: 10%;
+}
+
+#refresh-button {
+  position: absolute;
+  font-size: 30px;
+  border-radius: 50%;
+  bottom: 20px;
+  background-color: #fa6400;
+  color: #fff;
+}
