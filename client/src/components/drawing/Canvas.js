@@ -1,32 +1,73 @@
-import { useOnDraw } from "./Hooks";
+import React, { useState, useRef } from "react";
+import { Stage, Layer, Line } from "react-konva";
 
-const Canvas = ({ width, height }) => {
-  const setCanvasRef = useOnDraw(onDraw);
+export default function Canvas({ setDrawing }) {
+  const [lines, setLines] = useState([]);
+  const isDrawing = useRef(false);
 
-  function onDraw(ctx, point, prevPoint) {
-    drawLine(prevPoint, point, ctx, "#000000", 5);
-  }
+  const handleMouseDown = (e) => {
+    isDrawing.current = true;
+    const pos = e.target.getStage().getPointerPosition();
+    setLines([...lines, { tool: "pen", points: [pos.x, pos.y] }]);
+  };
 
-  function drawLine(start, end, ctx, color, width) {
-    start = start ?? end;
-    ctx.beginPath();
-    ctx.lineWidth = width;
-    ctx.strokeStyle = color;
-    ctx.moveTo(start.x, start.y);
-    ctx.lineTo(end.x, end.y);
-    ctx.stroke();
+  const handleMouseMove = (e) => {
+    // no drawing - skipping
+    if (!isDrawing.current) {
+      return;
+    }
+    const stage = e.target.getStage();
+    const point = stage.getPointerPosition();
+    let lastLine = lines[lines.length - 1];
+    // add point
+    lastLine.points = lastLine.points.concat([point.x, point.y]);
 
-    ctx.fillStyle = color;
-    ctx.beginPath();
-    ctx.arc(start.x, start.y, 2, 0, 2 * Math.PI);
-    ctx.fill();
-  }
+    // replace last
+    lines.splice(lines.length - 1, 1, lastLine);
+    setLines(lines.concat());
+  };
 
-  return <canvas width={width} height={height} style={canvasStyle} ref={setCanvasRef} />;
-};
+  const handleMouseUp = () => {
+    isDrawing.current = false;
+  };
 
-export default Canvas;
+  const doneDrawing = () => {
+    const canvas = document.getElementsByTagName("canvas")[0];
+    setDrawing(canvas.toDataURL());
+    clearBoard();
+  };
 
-const canvasStyle = {
-  border: "1px solid black",
-};
+  const clearBoard = () => {
+    setLines([]);
+  };
+
+  return (
+    <>
+      <Stage
+        width={300}
+        height={300}
+        container=".drawing"
+        onMouseDown={handleMouseDown}
+        onMousemove={handleMouseMove}
+        onMouseup={handleMouseUp}
+      >
+        <Layer>
+          {lines.map((line, i) => (
+            <Line
+              key={i}
+              points={line.points}
+              stroke="#ffffff"
+              strokeWidth={5}
+              tension={0.5}
+              lineCap="round"
+            />
+          ))}
+        </Layer>
+      </Stage>
+      <div className="tool_bar">
+        <button onClick={clearBoard}>Clear</button>
+        <button onClick={doneDrawing}>Done</button>
+      </div>
+    </>
+  );
+}
