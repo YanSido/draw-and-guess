@@ -23,7 +23,11 @@ const Canvas = ({ width, height }) => {
     ctx.fill();
   }
 
-  return <canvas id="canvas-board" width={width} height={height} ref={setCanvasRef} />;
+  return (
+    <div>
+      <canvas id="canvas-board" width={width} height={height} ref={setCanvasRef} />
+    </div>
+  );
 };
 
 export default Canvas;
