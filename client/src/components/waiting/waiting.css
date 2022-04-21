@@ -45,3 +45,13 @@
     transform: rotate(360deg);
   }
 }
+
+#back-button {
+  position: absolute;
+  top: 4%;
+  left: 4%;
+  border-radius: 50%;
+  font-size: 30px;
+  background-color: #fa6400;
+  color: #fff;
+}
