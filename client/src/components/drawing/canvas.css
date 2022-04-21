@@ -20,7 +20,7 @@
   flex-direction: row;
 }
 
-.send-clear-buttons {
+.small-buttons {
   background-color: #fa6400;
   font-family: system-ui, -apple-system, system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #fff;

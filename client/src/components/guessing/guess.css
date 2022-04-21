@@ -1,0 +1,23 @@
+#guess-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+#guess-title {
+  font-family: system-ui, -apple-system, system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+input {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  padding: 20px 15px;
+  font-size: 30px;
+  font-style: italic;
+  text-align: center;
+}
+
+input:focus {
+  border: 3px solid #555;
+}

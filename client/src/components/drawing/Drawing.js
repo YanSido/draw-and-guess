@@ -16,10 +16,10 @@ export default function Drawing() {
       <h1 id="canvas-title">Draw: </h1>
       <Canvas width={400} height={300} />
       <div id="canvas-buttons-div">
-        <button className="send-clear-buttons" onClick={() => sendCanvas()}>
+        <button className="small-buttons" onClick={() => sendCanvas()}>
           Send
         </button>
-        <button className="send-clear-buttons" onClick={() => clearCanvas()}>
+        <button className="small-buttons" onClick={() => clearCanvas()}>
           Clear
         </button>
       </div>
