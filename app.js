@@ -13,7 +13,6 @@ let rooms = {};
 const addUser = (id, nickname, roomId) => {
   const user = { nickname: nickname, id };
   rooms[roomId]["users"].push(user);
-  console.log(rooms);
 };
 
 const createRoom = (roomId, socketId) => {
@@ -25,9 +24,19 @@ const createRoom = (roomId, socketId) => {
   };
 };
 
-function getSixDigitRandom() {
+const getSixDigitRandom = () => {
   return parseInt(Math.random().toString().substring(2, 8));
-}
+};
+
+const getSixRandomWords = () => {
+  let randomWords = [];
+  for (let i = 0; i < 2; i++) {
+    randomWords.push(words.easy[Math.floor(Math.random() * words.easy.length)]);
+    randomWords.push(words.medium[Math.floor(Math.random() * words.medium.length)]);
+    randomWords.push(words.hard[Math.floor(Math.random() * words.hard.length)]);
+  }
+  return randomWords;
+};
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -35,13 +44,14 @@ app.use(cors());
 
 io.on("connection", (socket) => {
   console.log(socket.id, "connected");
+
   socket.on("create_room", ({ nickname }) => {
     let roomId = getSixDigitRandom();
     createRoom(roomId, socket.id);
     addUser(socket.id, nickname, roomId);
     console.log(nickname, "created room:", roomId);
     socket.join(roomId);
-    socket.emit("created_success", { room: roomId });
+    socket.emit("created_successfully", { roomId });
   });
 
   socket.on("join_room", ({ roomId, nickname }) => {
@@ -58,6 +68,30 @@ io.on("connection", (socket) => {
       socket.emit("error", {
         message: "Room is full",
       });
+    }
+  });
+
+  socket.on("setup", ({ roomId }) => {
+    let players = [];
+    if (rooms[roomId]) {
+      for (user of rooms[roomId]["users"]) {
+        players.push(user["id"]);
+      }
+      let data = { roomId, players, score: rooms[roomId]["score"] };
+      io.in(roomId).emit("data", data);
+    }
+  });
+
+  socket.on("start_game", ({ roomId }) => {
+    if (rooms[roomId]) {
+      io.to(rooms[roomId]["users"][0].id).emit("start_game");
+    }
+  });
+
+  socket.on("get_words", ({ currentRoom, nickname, myId }) => {
+    if (rooms[currentRoom]) {
+      const randomWords = getSixRandomWords();
+      io.to(myId).emit("words", { randomWords });
     }
   });
 });
