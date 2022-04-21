@@ -9,7 +9,7 @@
   font-family: system-ui, -apple-system, system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-input {
+.big-input {
   margin-top: 20px;
   margin-bottom: 10px;
   padding: 20px 15px;
@@ -18,6 +18,6 @@ input {
   text-align: center;
 }
 
-input:focus {
+.big-input:focus {
   border: 3px solid #555;
 }
