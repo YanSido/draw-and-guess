@@ -50,7 +50,7 @@ export default function Waiting() {
 
   socket.on("start_game", () => {
     console.log(myId, currentRoom);
-    socket.emit("get_words", { currentRoom, nickname, myId });
+    socket.emit("get_words_start", { currentRoom, nickname, myId });
     navigate("/wordchoosing", { state: { currentRoom, nickname, myId } });
   });
 

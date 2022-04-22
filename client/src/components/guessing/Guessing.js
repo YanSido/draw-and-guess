@@ -12,11 +12,10 @@ export default function Guessing() {
   const { chosenWord, currentRoom, nickname, myId } = location.state;
   const [wrongGuess, setWrongGuess] = useState(false);
   const [rightGuess, setRightGuess] = useState(false);
+  const [score, setScore] = useState(0);
 
   const handleCheckAnswer = () => {
-    console.log("SENT 1");
     if (answer !== "") {
-      console.log("SENT 2");
       socket.emit("check-answer", { answer, currentRoom, myId });
     }
   };
@@ -33,7 +32,10 @@ export default function Guessing() {
   socket.on("correct", ({ newScore }) => {
     setWrongGuess(false);
     setRightGuess(true);
-    console.log(newScore);
+    setScore(newScore);
+    setTimeout(function () {
+      navigate("/wordchoosing", { state: { currentRoom, nickname, myId } });
+    }, 3000);
   });
 
   return (
@@ -55,7 +57,7 @@ export default function Guessing() {
         </>
       )}
       {wrongGuess ? <p id="wrong-guess">Wrong guess, try again ...</p> : ""}
-      {rightGuess ? <p id="right-guess">Good job !</p> : ""}
+      {rightGuess ? <p className="right-guess">Good job !</p> : ""}
       <input
         className="big-input"
         onChange={(e) => {

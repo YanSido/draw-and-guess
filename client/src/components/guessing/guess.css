@@ -30,6 +30,8 @@
   color: red;
 }
 
-#right-guess {
+.right-guess {
+  font-size: 20px;
+  font-weight: bold;
   color: green;
 }

@@ -93,10 +93,17 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("get_words", ({ currentRoom, nickname, myId }) => {
+  socket.on("get_words_start", ({ currentRoom, nickname, myId }) => {
     if (rooms[currentRoom]) {
       const randomWords = getSixRandomWords();
       io.to(myId).emit("words", { randomWords });
+    }
+  });
+
+  socket.on("get_words", ({ currentRoom, nickname, myId }) => {
+    if (rooms[currentRoom]) {
+      const randomWords = getSixRandomWords();
+      io.to(getOpponent(myId, currentRoom)).emit("words", { randomWords });
     }
   });
 
@@ -123,10 +130,14 @@ io.on("connection", (socket) => {
           rooms[currentRoom]["score"] += 5;
         }
         console.log("Correct answer, new score:", rooms[currentRoom]["score"]);
-        io.in(currentRoom).emit("correct", { newScore: rooms[currentRoom]["score"] });
+        io.to(myId).emit("correct", { newScore: rooms[currentRoom]["score"] });
+        io.to(getOpponent(myId, currentRoom)).emit("correct", {
+          newScore: rooms[currentRoom]["score"],
+        });
       } else {
         console.log("Incorrect answer:", answer);
-        io.in(currentRoom).emit("incorrect");
+        io.to(myId).emit("incorrect");
+        io.to(getOpponent(myId, currentRoom)).emit("incorrect");
       }
     }
   });

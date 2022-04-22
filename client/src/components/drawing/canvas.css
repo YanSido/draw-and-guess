@@ -33,3 +33,12 @@
   margin: 10px;
   cursor: pointer;
 }
+
+#right-guess-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20%;
+  font-family: system-ui, -apple-system, system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: green;
+}
