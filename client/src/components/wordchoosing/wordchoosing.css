@@ -24,6 +24,7 @@
   padding: 20px;
   font-size: 30px;
   text-align: center;
+  cursor: pointer;
 }
 
 #choose-title {
@@ -38,4 +39,5 @@
   bottom: 20px;
   background-color: #fa6400;
   color: #fff;
+  cursor: pointer;
 }

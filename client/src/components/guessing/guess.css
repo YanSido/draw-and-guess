@@ -21,3 +21,7 @@
 .big-input:focus {
   border: 3px solid #555;
 }
+
+#img-div {
+  border: 1px solid black;
+}

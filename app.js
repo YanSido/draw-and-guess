@@ -38,6 +38,11 @@ const getSixRandomWords = () => {
   return randomWords;
 };
 
+const getOpponent = (id, roomId) => {
+  if (rooms[roomId]["users"][0].id === id) return rooms[roomId]["users"][1].id;
+  if (rooms[roomId]["users"][1].id === id) return rooms[roomId]["users"][0].id;
+};
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
@@ -92,6 +97,13 @@ io.on("connection", (socket) => {
     if (rooms[currentRoom]) {
       const randomWords = getSixRandomWords();
       io.to(myId).emit("words", { randomWords });
+    }
+  });
+
+  socket.on("paint", ({ dataURL, chosenWord, currentRoom, myId }) => {
+    if (rooms[currentRoom]) {
+      const randomWords = getSixRandomWords();
+      io.to(getOpponent(myId, currentRoom)).emit("received-paint", { dataURL });
     }
   });
 });

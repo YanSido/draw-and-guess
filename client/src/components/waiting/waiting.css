@@ -46,7 +46,7 @@
   }
 }
 
-#back-button {
+.back-button {
   position: absolute;
   top: 4%;
   left: 4%;
@@ -54,4 +54,5 @@
   font-size: 30px;
   background-color: #fa6400;
   color: #fff;
+  cursor: pointer;
 }

@@ -17,13 +17,23 @@ export default function WordChoosing() {
     socket.emit("get_words", { currentRoom, nickname, myId });
   };
 
+  const chooseWordHandle = (chosenWord) => {
+    navigate("/drawing", { state: { chosenWord, currentRoom, nickname, myId } });
+  };
+
   return (
     <div id="wordchoosing">
       <h1 id="choose-title">Choose word to draw</h1>
       <div class="grid-container">
         {words.map((word, index) => {
           return (
-            <button class="grid-item" id={index}>
+            <button
+              onClick={() => {
+                chooseWordHandle(word);
+              }}
+              class="grid-item"
+              id={index}
+            >
               {word}
             </button>
           );

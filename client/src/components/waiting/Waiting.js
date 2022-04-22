@@ -65,7 +65,7 @@ export default function Waiting() {
         onClick={() => {
           handleBack();
         }}
-        id="back-button"
+        className="back-button"
       >
         ↩
       </button>
