@@ -49,7 +49,6 @@ export default function Waiting() {
   });
 
   socket.on("start_game", () => {
-    console.log(myId, currentRoom);
     socket.emit("get_words_start", { currentRoom, nickname, myId });
     navigate("/wordchoosing", { state: { currentRoom, nickname, myId } });
   });
@@ -69,6 +68,7 @@ export default function Waiting() {
       >
         ↩
       </button>
+      <h1>Room ID: {currentRoom}</h1>
       {errorMessage && <p id="server-message">{serverMessage}</p>}
       {!errorMessage && (
         <div class="lds-ring">

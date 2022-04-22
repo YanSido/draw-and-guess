@@ -20,7 +20,6 @@ const createRoom = (roomId, socketId) => {
     users: [],
     word: null,
     score: 0,
-    firstDrawer: socketId,
   };
 };
 
@@ -104,6 +103,7 @@ io.on("connection", (socket) => {
     if (rooms[currentRoom]) {
       const randomWords = getSixRandomWords();
       io.to(getOpponent(myId, currentRoom)).emit("words", { randomWords });
+      io.to(myId).emit("words", { randomWords });
     }
   });
 
@@ -139,6 +139,17 @@ io.on("connection", (socket) => {
         io.to(myId).emit("incorrect");
         io.to(getOpponent(myId, currentRoom)).emit("incorrect");
       }
+    }
+  });
+
+  socket.on("get_score", ({ currentRoom, myId }) => {
+    if (rooms[currentRoom]) {
+      io.to(getOpponent(myId, currentRoom)).emit("score", {
+        newScore: rooms[currentRoom]["score"],
+      });
+      io.to(myId).emit("score", {
+        newScore: rooms[currentRoom]["score"],
+      });
     }
   });
 });

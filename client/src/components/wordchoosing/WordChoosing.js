@@ -8,6 +8,15 @@ export default function WordChoosing() {
   const navigate = useNavigate();
   const { currentRoom, nickname, myId } = location.state;
   const [words, setWords] = useState([]);
+  const [score, setScore] = useState(0);
+
+  useEffect(() => {
+    socket.emit("get_score", { currentRoom, myId });
+  }, []);
+
+  socket.on("score", ({ newScore }) => {
+    setScore(newScore);
+  });
 
   socket.on("words", ({ randomWords }) => {
     setWords(randomWords);
@@ -19,11 +28,12 @@ export default function WordChoosing() {
 
   const chooseWordHandle = (chosenWord) => {
     socket.emit("set_word", { chosenWord, currentRoom, nickname, myId });
-    navigate("/drawing", { state: { chosenWord, currentRoom, nickname, myId } });
+    navigate("/drawing", { state: { chosenWord, currentRoom, nickname, myId, score } });
   };
 
   return (
     <div id="wordchoosing">
+      <h1 id="score">Score: {score}</h1>
       <h1 id="choose-title">Choose word to draw</h1>
       <div class="grid-container">
         {words.map((word, index) => {

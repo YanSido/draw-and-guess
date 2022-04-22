@@ -12,6 +12,14 @@ export default function Drawing() {
   const [score, setScore] = useState(0);
   const [rightGuess, setRightGuess] = useState(false);
 
+  useEffect(() => {
+    socket.emit("get_score", { currentRoom, myId });
+  }, []);
+
+  socket.on("score", ({ newScore }) => {
+    setScore(newScore);
+  });
+
   function clearCanvas() {
     let canvas = document.getElementById("canvas-board");
     let context = canvas.getContext("2d");
@@ -40,9 +48,11 @@ export default function Drawing() {
         <h1 id="right-guess-title">Good job !</h1>
       ) : (
         <div id="canvas-div">
+          <h1 id="score">Score: {score}</h1>
           <h1 id="canvas-title">Draw: "{chosenWord}"</h1>
           {paintSent ? (
             <>
+              <h1 id="score">Score: {score}</h1>
               <div class="lds-ring">
                 <div></div>
                 <div></div>
@@ -53,6 +63,7 @@ export default function Drawing() {
             </>
           ) : (
             <>
+              <h1 id="score">Score: {score}</h1>
               <Canvas width={400} height={300} />
               <div id="canvas-buttons-div">
                 <button className="small-buttons" onClick={() => sendCanvas()}>
