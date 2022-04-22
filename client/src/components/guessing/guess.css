@@ -25,3 +25,11 @@
 #img-div {
   border: 1px solid black;
 }
+
+#wrong-guess {
+  color: red;
+}
+
+#right-guess {
+  color: green;
+}

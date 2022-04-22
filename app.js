@@ -100,10 +100,34 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("set_word", ({ chosenWord, currentRoom, nickname, myId }) => {
+    if (rooms[currentRoom]) {
+      rooms[currentRoom]["word"] = chosenWord;
+    }
+  });
+
   socket.on("paint", ({ dataURL, chosenWord, currentRoom, myId }) => {
     if (rooms[currentRoom]) {
-      const randomWords = getSixRandomWords();
       io.to(getOpponent(myId, currentRoom)).emit("received-paint", { dataURL });
+    }
+  });
+
+  socket.on("check-answer", ({ answer, currentRoom, myId }) => {
+    if (rooms[currentRoom]) {
+      if (rooms[currentRoom]["word"].toLowerCase() === answer.toLowerCase()) {
+        if (answer.length <= 4) {
+          rooms[currentRoom]["score"] += 1;
+        } else if (answer.length === 5) {
+          rooms[currentRoom]["score"] += 3;
+        } else {
+          rooms[currentRoom]["score"] += 5;
+        }
+        console.log("Correct answer, new score:", rooms[currentRoom]["score"]);
+        io.in(currentRoom).emit("correct", { newScore: rooms[currentRoom]["score"] });
+      } else {
+        console.log("Incorrect answer:", answer);
+        io.in(currentRoom).emit("incorrect");
+      }
     }
   });
 });

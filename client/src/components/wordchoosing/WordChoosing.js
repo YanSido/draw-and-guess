@@ -18,6 +18,7 @@ export default function WordChoosing() {
   };
 
   const chooseWordHandle = (chosenWord) => {
+    socket.emit("set_word", { chosenWord, currentRoom, nickname, myId });
     navigate("/drawing", { state: { chosenWord, currentRoom, nickname, myId } });
   };
 
