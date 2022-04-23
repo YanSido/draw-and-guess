@@ -35,3 +35,9 @@
   font-weight: bold;
   color: green;
 }
+
+@media screen and (max-width: 600px) {
+  .big-input {
+    padding: 10px 8px;
+  }
+}

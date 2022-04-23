@@ -35,6 +35,10 @@ export default function WordChoosing() {
     <div id="wordchoosing">
       <h1 id="score">Score: {score}</h1>
       <h1 id="choose-title">Choose word to draw</h1>
+      <p id="rules">
+        Remember:<br></br>3-4 letters = 1 point<br></br>5 letters = 3 points<br></br>6 or more
+        letters = 6 points
+      </p>
       <div class="grid-container">
         {words.map((word, index) => {
           return (

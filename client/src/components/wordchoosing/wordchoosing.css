@@ -16,15 +16,14 @@
   font-family: system-ui, -apple-system, system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #fff;
   border: 1px solid rgba(0, 0, 0, 0.8);
-  padding: 3vw;
-  font-size: 6vw;
+  padding: 20px;
+  font-size: 30px;
   text-align: center;
   cursor: pointer;
 }
 
 #choose-title {
   font-family: system-ui, -apple-system, system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
-  margin-bottom: 10%;
 }
 
 #refresh-button {
@@ -35,4 +34,26 @@
   background-color: #fa6400;
   color: #fff;
   cursor: pointer;
+}
+
+#rules {
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 5%;
+  font-size: large;
+}
+
+@media screen and (max-width: 600px) {
+  .grid-container {
+    margin-top: 40px;
+  }
+
+  .grid-item {
+    padding: 10px;
+    font-size: 20px;
+  }
+
+  #refresh-button {
+    bottom: 40px;
+  }
 }
