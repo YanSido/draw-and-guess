@@ -10,15 +10,17 @@ export default function Waiting() {
   const { roomId, nickname, action } = location.state;
   const [serverMessage, setServerMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState(false);
-  const [readyToPlay, setReadyToPlay] = useState(false);
-  const [players, setPlayers] = useState([]);
+  const [readyToPlay, setReadyToPlay] = useState(false); // indicates if opponent has joined
+  const [players, setPlayers] = useState([]); // players list
   const [currentRoom, setCurrentRoom] = useState("");
 
   const handleBack = () => {
+    // navigates back to home page
     navigate("/");
   };
 
   useEffect(() => {
+    // sets id and indicates who is player 1
     setMyId(socket.id);
     if (action === "create") {
       socket.emit("create_room", { nickname });
@@ -28,6 +30,7 @@ export default function Waiting() {
   }, []);
 
   useEffect(() => {
+    // navigates player 2 to guessing page
     if (myId === players[1]) {
       socket.emit("start_game", { roomId: roomId });
       navigate("/guess", { state: { currentRoom, nickname, myId } });
@@ -35,10 +38,12 @@ export default function Waiting() {
   }, [readyToPlay]);
 
   socket.on("created_successfully", ({ roomId }) => {
+    // room created successfully
     setCurrentRoom(roomId);
   });
 
   socket.on("joined_successfully", ({ joinedId }) => {
+    // joined successfully
     socket.emit("setup", { roomId: joinedId });
     socket.on("data", (data) => {
       console.log("30", data);
@@ -49,11 +54,13 @@ export default function Waiting() {
   });
 
   socket.on("start_game", () => {
+    // navigates player 1 to word choosing page
     socket.emit("get_words_start", { currentRoom, nickname, myId });
     navigate("/wordchoosing", { state: { currentRoom, nickname, myId } });
   });
 
   socket.on("error", ({ message }) => {
+    // displays error message
     setServerMessage(message);
     setErrorMessage(true);
   });

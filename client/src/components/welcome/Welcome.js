@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import "./welcome.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -10,6 +9,7 @@ export default function Welcome() {
   const navigate = useNavigate();
 
   const handleStart = () => {
+    // handles start button, nevigates to waiting view
     if (nickname !== "") {
       if (roomId !== "") {
         navigate("/waiting", { state: { roomId, nickname, action: "join" } });

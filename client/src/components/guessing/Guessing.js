@@ -6,42 +6,49 @@ import { useLocation, useNavigate } from "react-router-dom";
 export default function Guessing() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [paint, setPaint] = useState("");
-  const [answer, setAnswer] = useState("");
+  const [paint, setPaint] = useState(""); // opponent's paint
+  const [answer, setAnswer] = useState(""); // player's answer
   const [received, setReceived] = useState(false); // received paint from opponent
   const { chosenWord, currentRoom, nickname, myId } = location.state;
-  const [wrongGuess, setWrongGuess] = useState(false);
-  const [rightGuess, setRightGuess] = useState(false);
-  const [score, setScore] = useState(0);
+  const [wrongGuess, setWrongGuess] = useState(false); // player guessed wrong
+  const [rightGuess, setRightGuess] = useState(false); // player guessed right
+  const [score, setScore] = useState(0); // current score
 
   useEffect(() => {
+    // gets score from server
     socket.emit("get_score", { currentRoom, myId });
   }, []);
 
   socket.on("score", ({ newScore }) => {
+    // updates score
     setScore(newScore);
   });
 
   const handleCheckAnswer = () => {
+    // checks if guessed right
     if (answer !== "") {
       socket.emit("check-answer", { answer, currentRoom, myId });
     }
   };
 
   const endGame = () => {
+    // ends game
     socket.emit("end_game", { currentRoom, nickname, myId });
   };
 
   socket.on("received-paint", ({ dataURL }) => {
+    // receives paint from opponent
     setPaint(dataURL);
     setReceived(true);
   });
 
   socket.on("incorrect", () => {
+    // guessed wrong
     setWrongGuess(true);
   });
 
   socket.on("correct", ({ newScore }) => {
+    // guessed right, updates score and navigates to word choosing view
     setWrongGuess(false);
     setRightGuess(true);
     setScore(newScore);
@@ -51,6 +58,7 @@ export default function Guessing() {
   });
 
   socket.on("opponent_disconnected", ({ score, opponentNickname }) => {
+    // opponent disconnected, navigates to summary
     navigate("/summary", { state: { score, opponentNickname, nickname, currentRoom } });
   });
 

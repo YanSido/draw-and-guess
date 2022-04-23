@@ -11,30 +11,37 @@ export default function WordChoosing() {
   const [score, setScore] = useState(0);
 
   useEffect(() => {
+    // gets score from server
     socket.emit("get_score", { currentRoom, myId });
   }, []);
 
   socket.on("opponent_disconnected", ({ score, opponentNickname }) => {
+    // opponent disconnected, navigates to summary
     navigate("/summary", { state: { score, opponentNickname, nickname, currentRoom } });
   });
 
   socket.on("words", ({ randomWords }) => {
+    // gets 6 words from server
     setWords(randomWords);
   });
 
   socket.on("score", ({ newScore }) => {
+    // updates score
     setScore(newScore);
   });
 
   const refreshWords = () => {
+    // gets 6 new words from server
     socket.emit("get_words", { currentRoom, nickname, myId });
   };
 
   const endGame = () => {
+    // ends game
     socket.emit("end_game", { currentRoom, nickname, myId });
   };
 
   const chooseWordHandle = (chosenWord) => {
+    // chooses word, navigates to drawing view
     socket.emit("set_word", { chosenWord, currentRoom, nickname, myId });
     navigate("/drawing", { state: { chosenWord, currentRoom, nickname, myId, score } });
   };

@@ -8,6 +8,7 @@ export default function Summary() {
   const { score, opponentNickname, nickname, currentRoom } = location.state;
 
   const handleStart = () => {
+    // navigates back to home page
     navigate("/");
   };
 
