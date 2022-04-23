@@ -22,6 +22,8 @@ const createRoom = (roomId, socketId) => {
     users: [],
     word: null,
     score: 0,
+    minutes: 0,
+    seconds: 0,
   };
 };
 
@@ -107,10 +109,45 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("start_game", ({ roomId }) => {
+  socket.on("start_game", ({ roomId, myId }) => {
     // tells players that the game has started
     if (rooms[roomId]) {
       io.to(rooms[roomId]["users"][0].id).emit("start_game");
+      let myInterval = setInterval(() => {
+        if (rooms[roomId]) {
+          // start stopWatch
+          if (rooms[roomId].seconds < 59) {
+            rooms[roomId].seconds++;
+          }
+          if (rooms[roomId].seconds === 59) {
+            if (rooms[roomId].minutes === 60) {
+              clearInterval(myInterval);
+            } else {
+              io.to(myId).emit("stopWatch", {
+                seconds: rooms[roomId].seconds,
+                minutes: rooms[roomId].minutes,
+              });
+              io.to(getOpponent(myId, roomId)).emit("stopWatch", {
+                seconds: rooms[roomId].seconds,
+                minutes: rooms[roomId].minutes,
+              });
+              rooms[roomId].minutes++;
+              rooms[roomId].seconds = 0;
+            }
+          }
+          io.to(myId).emit("stopWatch", {
+            seconds: rooms[roomId].seconds,
+            minutes: rooms[roomId].minutes,
+          });
+          io.to(getOpponent(myId, roomId)).emit("stopWatch", {
+            seconds: rooms[roomId].seconds,
+            minutes: rooms[roomId].minutes,
+          });
+        }
+      }, 1000);
+      return () => {
+        clearInterval(myInterval);
+      };
     }
   });
 

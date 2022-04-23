@@ -11,7 +11,7 @@
   font-size: large;
 }
 
-#summary-score {
+.summary-score {
   font-weight: bold;
   text-align: center;
   font-size: 30px;

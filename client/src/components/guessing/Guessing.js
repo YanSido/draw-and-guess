@@ -13,6 +13,14 @@ export default function Guessing() {
   const [wrongGuess, setWrongGuess] = useState(false); // player guessed wrong
   const [rightGuess, setRightGuess] = useState(false); // player guessed right
   const [score, setScore] = useState(0); // current score
+  const [seconds, setSeconds] = useState(0);
+  const [minutes, setMinutes] = useState(0);
+
+  socket.on("stopWatch", ({ seconds, minutes }) => {
+    // updates stopWatch
+    setSeconds(seconds);
+    setMinutes(minutes);
+  });
 
   useEffect(() => {
     // gets score from server
@@ -59,11 +67,16 @@ export default function Guessing() {
 
   socket.on("opponent_disconnected", ({ score, opponentNickname }) => {
     // opponent disconnected, navigates to summary
-    navigate("/summary", { state: { score, opponentNickname, nickname, currentRoom } });
+    navigate("/summary", {
+      state: { score, opponentNickname, nickname, currentRoom, minutes, seconds },
+    });
   });
 
   return (
     <div id="guess-div">
+      <p>
+        {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
+      </p>
       <h1 id="score">Score: {score}</h1>
       <h1 id="guess-title">Guess: </h1>
       {received ? (

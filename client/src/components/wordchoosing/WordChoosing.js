@@ -9,6 +9,14 @@ export default function WordChoosing() {
   const { currentRoom, nickname, myId } = location.state;
   const [words, setWords] = useState([]);
   const [score, setScore] = useState(0);
+  const [seconds, setSeconds] = useState(0);
+  const [minutes, setMinutes] = useState(0);
+
+  socket.on("stopWatch", ({ seconds, minutes }) => {
+    // updates stopWatch
+    setSeconds(seconds);
+    setMinutes(minutes);
+  });
 
   useEffect(() => {
     // gets score from server
@@ -17,7 +25,9 @@ export default function WordChoosing() {
 
   socket.on("opponent_disconnected", ({ score, opponentNickname }) => {
     // opponent disconnected, navigates to summary
-    navigate("/summary", { state: { score, opponentNickname, nickname, currentRoom } });
+    navigate("/summary", {
+      state: { score, opponentNickname, nickname, currentRoom, minutes, seconds },
+    });
   });
 
   socket.on("words", ({ randomWords }) => {
@@ -48,6 +58,9 @@ export default function WordChoosing() {
 
   return (
     <div id="wordchoosing">
+      <p>
+        {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
+      </p>
       <h1 id="score">Score: {score}</h1>
       <h1 id="choose-title">Choose word to draw</h1>
       <p id="rules">

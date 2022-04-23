@@ -32,7 +32,7 @@ export default function Waiting() {
   useEffect(() => {
     // navigates player 2 to guessing page
     if (myId === players[1]) {
-      socket.emit("start_game", { roomId: roomId });
+      socket.emit("start_game", { roomId, myId });
       navigate("/guess", { state: { currentRoom, nickname, myId } });
     }
   }, [readyToPlay]);
