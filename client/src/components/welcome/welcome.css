@@ -40,6 +40,7 @@
   vertical-align: baseline;
   width: auto;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .medium-input {

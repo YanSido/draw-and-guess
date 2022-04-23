@@ -28,6 +28,10 @@ export default function Guessing() {
     }
   };
 
+  const endGame = () => {
+    socket.emit("end_game", { currentRoom, nickname, myId });
+  };
+
   socket.on("received-paint", ({ dataURL }) => {
     setPaint(dataURL);
     setReceived(true);
@@ -86,6 +90,14 @@ export default function Guessing() {
         className="small-buttons"
       >
         Check
+      </button>
+      <button
+        onClick={() => {
+          endGame();
+        }}
+        id="end-button"
+      >
+        End Game
       </button>
     </div>
   );

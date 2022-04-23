@@ -20,18 +20,22 @@ export default function Drawing() {
     setScore(newScore);
   });
 
-  function clearCanvas() {
+  const endGame = () => {
+    socket.emit("end_game", { currentRoom, nickname, myId });
+  };
+
+  const clearCanvas = () => {
     let canvas = document.getElementById("canvas-board");
     let context = canvas.getContext("2d");
     context.clearRect(0, 0, canvas.width, canvas.height);
-  }
+  };
 
-  function sendCanvas() {
+  const sendCanvas = () => {
     let canvas = document.getElementById("canvas-board");
     let dataURL = canvas.toDataURL();
     socket.emit("paint", { dataURL, chosenWord, currentRoom, myId });
     setPaintSent(true);
-  }
+  };
 
   socket.on("correct", ({ newScore }) => {
     setRightGuess(true);
@@ -79,6 +83,14 @@ export default function Drawing() {
               </div>
             </>
           )}
+          <button
+            onClick={() => {
+              endGame();
+            }}
+            id="end-button"
+          >
+            End Game
+          </button>
         </div>
       )}
     </>

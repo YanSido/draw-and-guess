@@ -48,6 +48,11 @@ const getOpponent = (id, roomId) => {
   if (rooms[roomId]["users"][1].id === id) return rooms[roomId]["users"][0].id;
 };
 
+const getOpponentNickname = (id, roomId) => {
+  if (rooms[roomId]["users"][0].id === id) return rooms[roomId]["users"][1].nickname;
+  if (rooms[roomId]["users"][1].id === id) return rooms[roomId]["users"][0].nickname;
+};
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
@@ -156,6 +161,21 @@ io.on("connection", (socket) => {
       io.to(myId).emit("score", {
         newScore: rooms[currentRoom]["score"],
       });
+    }
+  });
+
+  socket.on("end_game", ({ currentRoom, nickname, myId }) => {
+    if (rooms[currentRoom]) {
+      console.log(nickname, "ended game from room:", currentRoom);
+      io.to(getOpponent(myId, currentRoom)).emit("opponent_disconnected", {
+        score: rooms[currentRoom]["score"],
+        opponentNickname: nickname,
+      });
+      io.to(myId).emit("opponent_disconnected", {
+        score: rooms[currentRoom]["score"],
+        opponentNickname: getOpponentNickname(myId, currentRoom),
+      });
+      delete rooms[currentRoom];
     }
   });
 

@@ -30,6 +30,10 @@ export default function WordChoosing() {
     socket.emit("get_words", { currentRoom, nickname, myId });
   };
 
+  const endGame = () => {
+    socket.emit("end_game", { currentRoom, nickname, myId });
+  };
+
   const chooseWordHandle = (chosenWord) => {
     socket.emit("set_word", { chosenWord, currentRoom, nickname, myId });
     navigate("/drawing", { state: { chosenWord, currentRoom, nickname, myId, score } });
@@ -58,14 +62,24 @@ export default function WordChoosing() {
           );
         })}
       </div>
-      <button
-        onClick={() => {
-          refreshWords();
-        }}
-        id="refresh-button"
-      >
-        ↻
-      </button>
+      <div id="action-buttons">
+        <button
+          onClick={() => {
+            refreshWords();
+          }}
+          id="refresh-button"
+        >
+          ↻
+        </button>
+        <button
+          onClick={() => {
+            endGame();
+          }}
+          id="end-button"
+        >
+          End Game
+        </button>
+      </div>
     </div>
   );
 }
