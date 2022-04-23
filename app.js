@@ -8,14 +8,16 @@ const io = require("socket.io")(http);
 const PORT = process.env.PORT || 8080;
 const { words } = require("./data/words.js");
 
-let rooms = {};
+let rooms = {}; // rooms in game
 
 const addUser = (id, nickname, roomId) => {
+  // add user to room
   const user = { nickname: nickname, id };
   rooms[roomId]["users"].push(user);
 };
 
 const createRoom = (roomId, socketId) => {
+  // create room
   rooms[roomId] = {
     users: [],
     word: null,
@@ -24,10 +26,12 @@ const createRoom = (roomId, socketId) => {
 };
 
 const getSixDigitRandom = () => {
+  // generate six digit random number
   return parseInt(Math.random().toString().substring(2, 8));
 };
 
 const getSixRandomWords = () => {
+  // get six random words from "words.js" dictionary file
   let randomWords = [];
   let easyWord = "";
   let mediumWord = "";
@@ -44,11 +48,13 @@ const getSixRandomWords = () => {
 };
 
 const getOpponent = (id, roomId) => {
+  // get opponent's id
   if (rooms[roomId]["users"][0].id === id) return rooms[roomId]["users"][1].id;
   if (rooms[roomId]["users"][1].id === id) return rooms[roomId]["users"][0].id;
 };
 
 const getOpponentNickname = (id, roomId) => {
+  // get opponent's nickname
   if (rooms[roomId]["users"][0].id === id) return rooms[roomId]["users"][1].nickname;
   if (rooms[roomId]["users"][1].id === id) return rooms[roomId]["users"][0].nickname;
 };
@@ -58,18 +64,21 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
 io.on("connection", (socket) => {
+  // when user connects to the server
   console.log(socket.id, "connected");
 
   socket.on("create_room", ({ nickname }) => {
+    // when user creates room
     let roomId = getSixDigitRandom();
     createRoom(roomId, socket.id);
     addUser(socket.id, nickname, roomId);
     console.log(nickname, "created room:", roomId);
-    socket.join(roomId);
+    socket.join(roomId); // add socket to room
     socket.emit("created_successfully", { roomId });
   });
 
   socket.on("join_room", ({ roomId, nickname }) => {
+    // when user joins room
     if (!rooms[roomId]) {
       console.log(nickname, "tried to join room", roomId, "but room doesn't exist");
       socket.emit("error", { message: "Room doesn't exist" });
@@ -87,6 +96,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("setup", ({ roomId }) => {
+    // send players initial data
     let players = [];
     if (rooms[roomId]) {
       for (user of rooms[roomId]["users"]) {
@@ -98,12 +108,14 @@ io.on("connection", (socket) => {
   });
 
   socket.on("start_game", ({ roomId }) => {
+    // tells players that the game has started
     if (rooms[roomId]) {
       io.to(rooms[roomId]["users"][0].id).emit("start_game");
     }
   });
 
   socket.on("get_words_start", ({ currentRoom, nickname, myId }) => {
+    // sends drawing player the words at the start of the game
     if (rooms[currentRoom]) {
       const randomWords = getSixRandomWords();
       io.to(myId).emit("words", { randomWords });
@@ -111,6 +123,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("get_words", ({ currentRoom, nickname, myId }) => {
+    // sends drawing player the words
     if (rooms[currentRoom]) {
       const randomWords = getSixRandomWords();
       io.to(getOpponent(myId, currentRoom)).emit("words", { randomWords });
@@ -119,18 +132,21 @@ io.on("connection", (socket) => {
   });
 
   socket.on("set_word", ({ chosenWord, currentRoom, nickname, myId }) => {
+    // set room's word
     if (rooms[currentRoom]) {
       rooms[currentRoom]["word"] = chosenWord;
     }
   });
 
   socket.on("paint", ({ dataURL, chosenWord, currentRoom, myId }) => {
+    // sends guessing player the paint of the drawing player
     if (rooms[currentRoom]) {
       io.to(getOpponent(myId, currentRoom)).emit("received-paint", { dataURL });
     }
   });
 
   socket.on("check-answer", ({ answer, currentRoom, myId }) => {
+    // check player's answer
     if (rooms[currentRoom]) {
       if (rooms[currentRoom]["word"].toLowerCase() === answer.toLowerCase()) {
         if (answer.length <= 4) {
@@ -154,6 +170,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("get_score", ({ currentRoom, myId }) => {
+    // sends players their score
     if (rooms[currentRoom]) {
       io.to(getOpponent(myId, currentRoom)).emit("score", {
         newScore: rooms[currentRoom]["score"],
@@ -165,6 +182,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("end_game", ({ currentRoom, nickname, myId }) => {
+    // one of the players ends the game
     if (rooms[currentRoom]) {
       console.log(nickname, "ended game from room:", currentRoom);
       io.to(getOpponent(myId, currentRoom)).emit("opponent_disconnected", {
@@ -180,6 +198,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
+    // one of the players disconnects
     if (!rooms) {
       return;
     }
