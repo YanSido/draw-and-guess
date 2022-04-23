@@ -7,6 +7,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import Waiting from "./components/waiting/Waiting";
 import Drawing from "./components/drawing/Drawing";
 import Guess from "./components/guessing/Guessing";
+import Summary from "./components/summary/Summary";
 
 ReactDOM.render(
   <Router>
@@ -16,6 +17,7 @@ ReactDOM.render(
       <Route path="/wordchoosing" element={<WordChoosing />} />
       <Route path="/drawing" element={<Drawing />} />
       <Route path="/guess" element={<Guess />} />
+      <Route path="/summary" element={<Summary />} />
     </Routes>
   </Router>,
   document.getElementById("root")

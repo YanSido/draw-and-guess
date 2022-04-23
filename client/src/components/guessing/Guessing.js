@@ -46,6 +46,10 @@ export default function Guessing() {
     }, 3000);
   });
 
+  socket.on("opponent_disconnected", ({ score, opponentNickname }) => {
+    navigate("/summary", { state: { score, opponentNickname, nickname, currentRoom } });
+  });
+
   return (
     <div id="guess-div">
       <h1 id="score">Score: {score}</h1>

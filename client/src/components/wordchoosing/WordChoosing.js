@@ -14,12 +14,16 @@ export default function WordChoosing() {
     socket.emit("get_score", { currentRoom, myId });
   }, []);
 
-  socket.on("score", ({ newScore }) => {
-    setScore(newScore);
+  socket.on("opponent_disconnected", ({ score, opponentNickname }) => {
+    navigate("/summary", { state: { score, opponentNickname, nickname, currentRoom } });
   });
 
   socket.on("words", ({ randomWords }) => {
     setWords(randomWords);
+  });
+
+  socket.on("score", ({ newScore }) => {
+    setScore(newScore);
   });
 
   const refreshWords = () => {

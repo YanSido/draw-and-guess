@@ -1,0 +1,18 @@
+#summary-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.summary-details {
+  text-align: center;
+  font-size: large;
+}
+
+#summary-score {
+  font-weight: bold;
+  text-align: center;
+  font-size: 30px;
+}

@@ -158,6 +158,23 @@ io.on("connection", (socket) => {
       });
     }
   });
+
+  socket.on("disconnect", () => {
+    if (!rooms) {
+      return;
+    }
+    for (roomId in rooms) {
+      let user = rooms[roomId]["users"].find((user) => user["id"] === socket.id);
+      if (user) {
+        console.log(user.nickname, "disconnected from room:", roomId);
+        io.to(getOpponent(socket.id, roomId)).emit("opponent_disconnected", {
+          score: rooms[roomId]["score"],
+          opponentNickname: user["nickname"],
+        });
+        delete rooms[roomId];
+      }
+    }
+  });
 });
 
 app.use("/", express.static(`./client/build`));

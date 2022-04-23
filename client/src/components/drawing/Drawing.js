@@ -42,6 +42,10 @@ export default function Drawing() {
     }, 3000);
   });
 
+  socket.on("opponent_disconnected", ({ score, opponentNickname }) => {
+    navigate("/summary", { state: { score, opponentNickname, nickname, currentRoom } });
+  });
+
   return (
     <>
       {rightGuess ? (
