@@ -29,10 +29,16 @@ const getSixDigitRandom = () => {
 
 const getSixRandomWords = () => {
   let randomWords = [];
-  for (let i = 0; i < 2; i++) {
-    randomWords.push(words.easy[Math.floor(Math.random() * words.easy.length)]);
-    randomWords.push(words.medium[Math.floor(Math.random() * words.medium.length)]);
-    randomWords.push(words.hard[Math.floor(Math.random() * words.hard.length)]);
+  let easyWord = "";
+  let mediumWord = "";
+  let hardWord = "";
+  while (randomWords.length < 6) {
+    easyWord = words.easy[Math.floor(Math.random() * words.easy.length)];
+    mediumWord = words.medium[Math.floor(Math.random() * words.medium.length)];
+    hardWord = words.hard[Math.floor(Math.random() * words.hard.length)];
+    if (!randomWords.includes(easyWord) || randomWords.length < 6) randomWords.push(easyWord);
+    if (!randomWords.includes(mediumWord) || randomWords.length < 6) randomWords.push(mediumWord);
+    if (!randomWords.includes(hardWord) || randomWords.length < 6) randomWords.push(hardWord);
   }
   return randomWords;
 };
