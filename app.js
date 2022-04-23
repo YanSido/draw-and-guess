@@ -14,8 +14,21 @@ const Session = require("./models/sessionSchema");
 let rooms = {}; // rooms in game
 
 async function getDatabase() {
+  // get all sessions from database
   let sessions = await Session.find();
   return sessions;
+}
+
+async function updateDataBase(session) {
+  // update database
+  await Session.create({
+    roomid: session.currentRoom,
+    playerone: session.playerOne,
+    playertwo: session.playerTwo,
+    score: session.score,
+    minutes: session.minutes,
+    seconds: session.seconds,
+  });
 }
 
 const addUser = (id, nickname, roomId) => {
@@ -94,11 +107,8 @@ io.on("connection", (socket) => {
   console.log(socket.id, "connected");
 
   socket.on("sessions_data", async ({}) => {
-    // when user creates room
-    let data = await getDatabase();
-    let best = bestSession(data);
-    console.log("100 data ", data);
-    console.log("101 best ", best);
+    let data = await getDatabase(); // get sessions data from db
+    let best = bestSession(data); // get best session
     socket.emit("sessions_data", {
       bestPlayerOne: best.playerone,
       bestPlayerTwo: best.playertwo,
@@ -269,6 +279,15 @@ io.on("connection", (socket) => {
         score: rooms[currentRoom]["score"],
         opponentNickname: getOpponentNickname(myId, currentRoom),
       });
+
+      updateDataBase({
+        currentRoom,
+        playerOne: nickname,
+        playerTwo: getOpponentNickname(myId, currentRoom),
+        score: rooms[currentRoom]["score"],
+        minutes: rooms[currentRoom]["minutes"],
+        seconds: rooms[currentRoom]["seconds"],
+      });
       delete rooms[currentRoom];
     }
   });
@@ -285,6 +304,14 @@ io.on("connection", (socket) => {
         io.to(getOpponent(socket.id, roomId)).emit("opponent_disconnected", {
           score: rooms[roomId]["score"],
           opponentNickname: user["nickname"],
+        });
+        updateDataBase({
+          currentRoom,
+          playerOne: nickname,
+          playerTwo: getOpponentNickname(myId, currentRoom),
+          score: rooms[currentRoom]["score"],
+          minutes: rooms[currentRoom]["minutes"],
+          seconds: rooms[currentRoom]["seconds"],
         });
         delete rooms[roomId];
       }
