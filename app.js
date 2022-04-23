@@ -7,8 +7,16 @@ const http = require("http").createServer(app);
 const io = require("socket.io")(http);
 const PORT = process.env.PORT || 8080;
 const { words } = require("./data/words.js");
+const mongoose = require("mongoose");
+const MONGO_URI = process.env.MONGO_URI;
+const Session = require("./models/sessionSchema");
 
 let rooms = {}; // rooms in game
+
+async function getDatabase() {
+  let sessions = await Session.find();
+  return sessions;
+}
 
 const addUser = (id, nickname, roomId) => {
   // add user to room
@@ -61,6 +69,22 @@ const getOpponentNickname = (id, roomId) => {
   if (rooms[roomId]["users"][1].id === id) return rooms[roomId]["users"][0].nickname;
 };
 
+const bestSession = (sessions) => {
+  // returns best session
+  sessions.sort((a, b) => {
+    if (a.minutes === b.minutes) {
+      if (a.seconds === b.seconds) {
+        return a.score < b.score ? -1 : a.score > b.score ? 1 : 0;
+      } else {
+        return a.seconds < b.seconds ? -1 : 1;
+      }
+    } else {
+      return a.minutes < b.minutes ? -1 : 1;
+    }
+  });
+  return sessions[0];
+};
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
@@ -68,6 +92,21 @@ app.use(cors());
 io.on("connection", (socket) => {
   // when user connects to the server
   console.log(socket.id, "connected");
+
+  socket.on("sessions_data", async ({}) => {
+    // when user creates room
+    let data = await getDatabase();
+    let best = bestSession(data);
+    console.log("100 data ", data);
+    console.log("101 best ", best);
+    socket.emit("sessions_data", {
+      bestPlayerOne: best.playerone,
+      bestPlayerTwo: best.playertwo,
+      bestScore: best.score,
+      minutes: best.minutes,
+      seconds: best.seconds,
+    });
+  });
 
   socket.on("create_room", ({ nickname }) => {
     // when user creates room
@@ -259,6 +298,13 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
 }
 
-http.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
-});
+mongoose
+  .connect(MONGO_URI)
+  .then(() => {
+    http.listen(PORT, () => {
+      console.log(`Listening on port ${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.log("error connecting to MongoDB or Server:", error.message);
+  });
