@@ -74,7 +74,7 @@ export default function Guessing() {
 
   return (
     <div id="guess-div">
-      <p>
+      <p className="stop-watch">
         {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
       </p>
       <h1 id="score">Score: {score}</h1>

@@ -40,4 +40,11 @@
   .big-input {
     padding: 10px 8px;
   }
+  #score {
+    margin-top: -10px;
+  }
+
+  #guess-title {
+    margin-top: -10px;
+  }
 }
