@@ -10,9 +10,9 @@
 ## General info
 
 The Draw and Guess game is a drawing & guessing game for your phone, tablet or PC.<br />
-Do your best to draw the word you are given while the second player tries to guess it!<br />
+Do your best to draw the word you are given while the second player tries to guess it!<br /><br />
 Enter your nickname and press the "Press To Start" button, a room ID will be displayed and now all that's left is to share the room ID with your friend !<br />
-You choose when to end the game by clicking the "End Game" button or just leaving, don't worry! a summary of your game will be displayed.<br />
+You choose when to end the game by clicking the "End Game" button or just leaving, don't worry! a summary of your game will be displayed.<br /><br />
 Another feature the game has is every session stats is saved on the data base, the best session will be displayed on the home page
 
 
