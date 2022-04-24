@@ -305,14 +305,6 @@ io.on("connection", (socket) => {
           score: rooms[roomId]["score"],
           opponentNickname: user["nickname"],
         });
-        updateDataBase({
-          currentRoom,
-          playerOne: nickname,
-          playerTwo: getOpponentNickname(myId, currentRoom),
-          score: rooms[currentRoom]["score"],
-          minutes: rooms[currentRoom]["minutes"],
-          seconds: rooms[currentRoom]["seconds"],
-        });
         delete rooms[roomId];
       }
     }
